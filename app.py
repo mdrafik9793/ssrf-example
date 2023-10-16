@@ -1,8 +1,10 @@
 from flask import Flask, request
 import requests
+from flask_httpauth import HTTPBasicAuth
+
 
 app = Flask(__name__)
-
+auth = HTTPBasicAuth()
 
 def ssrf_html(text=""):
     return '''
@@ -56,12 +58,19 @@ def ssrf_html(text=""):
     </html>
     '''.replace('__TEXT__', text)
 
+@auth.verify_password
+def verify_password(username, password):
+    return username == 'admin' and password == 'hacktricks'
+
 @app.route('/')
+@auth.login_required
 def index():
     return ssrf_html()
 
 @app.route('/fetch', methods=['GET', 'POST'])
+@auth.login_required
 def fetch_url():
+    url = ""
     if request.method == 'GET':
         url = request.args.get('url')
     elif request.method == 'POST':
@@ -77,4 +86,4 @@ def fetch_url():
         return ssrf_html('Unable to fetch URL')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=45380)
