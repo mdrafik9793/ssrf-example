@@ -1,10 +1,14 @@
 from flask import Flask, request
 import requests
 from flask_httpauth import HTTPBasicAuth
+import os
 
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
+
+USERNAME = os.environ.get('SSRF_USERNAME', 'admin')
+PASSWORD = os.environ.get('SSRF_PASSWORD', 'hacktricks')
 
 def ssrf_html(text=""):
     return '''
@@ -60,7 +64,8 @@ def ssrf_html(text=""):
 
 @auth.verify_password
 def verify_password(username, password):
-    return username == 'admin' and password == 'hacktricks'
+    global USERNAME, PASSWORD
+    return username == USERNAME and password == PASSWORD
 
 @app.route('/')
 @auth.login_required
