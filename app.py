@@ -9,6 +9,7 @@ auth = HTTPBasicAuth()
 
 USERNAME = os.environ.get('SSRF_USERNAME', 'admin')
 PASSWORD = os.environ.get('SSRF_PASSWORD', 'hacktricks')
+PORT = int(os.environ.get('SSRF_PORT', '45380'))
 
 def ssrf_html(text=""):
     return '''
@@ -91,4 +92,4 @@ def fetch_url():
         return ssrf_html('Unable to fetch URL')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=45380)
+    app.run(host='0.0.0.0', port=PORT)
