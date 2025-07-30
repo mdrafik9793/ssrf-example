@@ -1,0 +1,23 @@
+name: Get AWS Temp Credentials
+
+on:
+  workflow_dispatch:
+
+jobs:
+  get-temp-creds:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::601897965856:role/sts-lab-2-target
+          aws-region: us-east-1
+
+      - name: Print Temporary Credentials
+        run: |
+          echo "Access Key: $AWS_ACCESS_KEY_ID"
+          echo "Secret Key: $AWS_SECRET_ACCESS_KEY"
+          echo "Session Token: $AWS_SESSION_TOKEN"
